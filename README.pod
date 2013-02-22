@@ -1,1 +1,1 @@
-lib/App/ikachaos.pm
+ikachaos.pl
