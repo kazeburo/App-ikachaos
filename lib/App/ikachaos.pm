@@ -13,23 +13,23 @@ __END__
 
 =head1 NAME
 
-App::ikachaos - ...
+App::ikachaos - tinytiny monitoring tool
 
 =head1 SYNOPSIS
 
-  use App::ikachaos;
+  $ ikachaos.pl -h
 
 =head1 DESCRIPTION
 
-App::ikachaos is
-
-B<THIS IS A DEVELOPMENT RELEASE. API MAY CHANGE WITHOUT NOTICE>.
+see <ikachaos.pl>
 
 =head1 AUTHOR
 
 Masahiro Nagano E<lt>kazeburo@gmail.comE<gt>
 
 =head1 SEE ALSO
+
+<ikachaos.pl>, <ikachan>
 
 =head1 LICENSE
 
