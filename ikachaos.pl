@@ -25,13 +25,31 @@ GetOptions(
     'retry-interval=i' => \$retry_interval,
     'notification-interval=i' => \$notification_interval,
     'max-check-attempts=i' => \$max_check_attempts,
+    'dry-run' => \my $dry_run,
 ) or pod2usage(1);
 
 pod2usage(-verbose=>2,-exitval=>0) if $help;
 my @cmd = @ARGV;
+pod2usage(-verbose=>1,-exitval=>1) unless @cmd;
+
+
+if ( $dry_run ) {
+    my ($result, $exit_code);
+    eval {
+        ($result, $exit_code) = cap_cmd(\@cmd, $command_timeout);
+    };
+    if ($@) {
+        $result = $@;
+        $exit_code = 255;
+    }
+    $result = '-' if ! defined $result;
+    printf 'DRY-RUN [%s] %s / %s'."\n", code_to_text($exit_code), join(" ", @cmd), $result;
+    exit($exit_code);
+}
+
+
 pod2usage(-verbose=>1,-exitval=>1) unless $api_url;
 pod2usage(-verbose=>1,-exitval=>1) unless @channel;
-pod2usage(-verbose=>1,-exitval=>1) unless @cmd;
 
 my $check_interval_sec = $check_interval * 60;
 my $retry_interval_sec = $retry_interval * 60;
@@ -82,7 +100,7 @@ while ( $stop ) {
         debugf("ERROR STATE: %s", @status);
         if ( time - $last_notify >= $notification_interval_sec   ) {
             $last_notify = time;
-            my $message = sprintf '*ikachaos* Alerts: command is %s. %s / %s', code_to_text($exit_code), join(" ", @cmd), $result;
+            my $message = sprintf '*ikachaos* Alerts: [%s] %s / %s', code_to_text($exit_code), join(" ", @cmd), $result;
             my $ua = LWP::UserAgent->new;
             for my $channel ( @channel ) {
                 debugf("SEND NOTIFY to channel:%s message:%s", $channel, $message);
@@ -197,6 +215,10 @@ ikachaos.pl is tinytiny monitoring tool. exec a command and check exit code. If 
 =item -h, --help
 
 Display help message
+
+=item --dry-run
+
+Do dry run command and exit
 
 =item --api-url: URL
 
