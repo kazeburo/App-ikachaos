@@ -1,6 +1,7 @@
 .travis.yml
 Build.PL
 Changes
+cpanfile
 ikachaos.pl
 lib/App/ikachaos.pm
 LICENSE
